@@ -33,7 +33,7 @@ class Ship:
         # the ship's x cooridinate is being updated not the rectange
         if self.moving_right and self.rect.right < self.screen_rect.right:
             self.x += self.settings.ship_speed
-        if self.moving_left and self.left.left < self.screen_rect.left:
+        if self.moving_left and self.rect.left > self.screen_rect.left:
             self.x -= self.settings.ship_speed
 
         # Update rect object from self.x.
