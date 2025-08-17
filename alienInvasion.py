@@ -1,9 +1,11 @@
 import sys
+from time import sleep
 import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from game_stats import GameStats
 
 
 class AlienInvasion:
@@ -12,12 +14,20 @@ class AlienInvasion:
     def __init__(self):
         """Initialize the game, and create game resources."""
         pygame.init()
+        # Start Alien Invasion in an inactive state.
+        self.game_active = False
+
         self.clock = pygame.time.Clock()
         self.settings = Settings()
 
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("Alien Invasion")
+
+        # Create an instance to store game statistics.
+        self.stats = GameStats(self)
+
+
 
     #     adding in ship
         self.ship = Ship(self)
@@ -66,6 +76,11 @@ class AlienInvasion:
         """Update the positions of all aliens in the fleet."""
         self._check_fleet_edges()
         self.alien.update()
+
+        # look for collisions
+        # if pygame.sprite.spritecollideany(self.ship, self.alien):
+            # print("Ship hit!!!")
+
     def _check_events(self):
         """Respond to keypresses and mouse events."""
         for event in pygame.event.get():
@@ -117,17 +132,22 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
-        # Check if bullet hit alien
-        collisions = pygame.sprite.groupcollide(self.bullets, self.alien, True, True)
+        self._check_bullet_alien_collisions()
 
-        if not self.alien:
-        # Destroy existing bullets and create new fleet.
-            self.bullets.empty()
-            self._create_fleet()
+    def _check_bullet_alien_collisions(self):
+            """Respond to bullet-alien collisions."""
+        # Remove any bullets and aliens that have collided.
+            collisions = pygame.sprite.groupcollide(self.bullets, self.alien, True, True)
+
+            if not self.alien:
+                # Destroy existing bullets and create new fleet.
+                self.bullets.empty()
+                self._create_fleet()
     def run_game(self):
         """Start the main loop for the game."""
         while True:
             self._check_events()
+            # if self.game_active:
             self.ship.update()
             self._update_bullets()
             self._update_aliens()

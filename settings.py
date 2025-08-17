@@ -10,9 +10,10 @@ class Settings:
 
         # ship settings
         self.ship_speed= 1.5 # now the ship moves 1.5 pixels per cycle
+        self.ship_limit = 3
 
         # bullet settings
-        self.bullet_speed=2.0
+        self.bullet_speed=2.5
         # temp width
         self.bullet_width=300
         self.bullet_height=15
@@ -21,6 +22,6 @@ class Settings:
 
         # alien settings
         self.alien_speed =1.0
-        self.fleet_drop_speed = 10
+        self.fleet_drop_speed = 100
         self.fleet_direction = 1
 
