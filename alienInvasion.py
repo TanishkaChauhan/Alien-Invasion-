@@ -15,7 +15,7 @@ class AlienInvasion:
         """Initialize the game, and create game resources."""
         pygame.init()
         # Start Alien Invasion in an inactive state.
-        self.game_active = False
+        self.game_active = True
 
         self.clock = pygame.time.Clock()
         self.settings = Settings()
@@ -78,9 +78,36 @@ class AlienInvasion:
         self.alien.update()
 
         # look for collisions
-        # if pygame.sprite.spritecollideany(self.ship, self.alien):
-            # print("Ship hit!!!")
+        if pygame.sprite.spritecollideany(self.ship, self.alien):
+            self._ship_hit()
+        self._check_aliens_bottom()
 
+    def _ship_hit(self):
+        """Respond to the ship being hit by an alien."""
+        if self.stats.ships_left > 0:
+            # Decrement ships_left.
+            self.stats.ships_left -= 1
+
+            # Get rid of any remaining bullets and aliens.
+            self.bullets.empty()
+            self.alien.empty()
+
+            # Create a new fleet and center the ship.
+            self._create_fleet()
+            self.ship.center_ship()
+
+            # Pause.
+            sleep(0.5)
+        else:
+            self.game_active = False
+
+    def _check_aliens_bottom(self):
+        """Check if any aliens have reached the bottom of the screen."""
+        for alien in self.alien.sprites():
+            if alien.rect.bottom >= self.settings.screen_height:
+                # Treat this the same as if the ship got hit. Game Over
+                self._ship_hit()
+                break
     def _check_events(self):
         """Respond to keypresses and mouse events."""
         for event in pygame.event.get():
@@ -147,10 +174,10 @@ class AlienInvasion:
         """Start the main loop for the game."""
         while True:
             self._check_events()
-            # if self.game_active:
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
+            if self.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
             self._update_screen()
             self.clock.tick(60)
 
