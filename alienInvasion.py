@@ -119,6 +119,11 @@ class AlienInvasion:
                 self.bullets.remove(bullet)
         # Check if bullet hit alien
         collisions = pygame.sprite.groupcollide(self.bullets, self.alien, True, True)
+
+        if not self.alien:
+        # Destroy existing bullets and create new fleet.
+            self.bullets.empty()
+            self._create_fleet()
     def run_game(self):
         """Start the main loop for the game."""
         while True:
