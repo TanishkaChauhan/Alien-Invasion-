@@ -117,6 +117,8 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
+        # Check if bullet hit alien
+        collisions = pygame.sprite.groupcollide(self.bullets, self.alien, True, True)
     def run_game(self):
         """Start the main loop for the game."""
         while True:
